@@ -1,0 +1,93 @@
+<!-- Fichier : web/backend/templates/search.html (CORRIGÉ ET SIMPLIFIÉ) -->
+
+{% extends "base.html" %}
+
+{% block title %}Recherche - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/search.css">
+{% endblock %}
+
+{% block content %}
+    <!-- Bannière de recherche -->
+    <section class="search-banner">
+        <div class="container">
+            <h1>Explorez et découvrez</h1>
+            <p>Trouvez votre prochaine destination de rêve</p>
+            <div class="search-box">
+                <form action="/search" method="GET">
+                    <input type="text" name="q" placeholder="Où souhaitez-vous aller ?" value="{{ query if query else '' }}">
+                    <button type="submit"><i class="fas fa-search"></i> Rechercher</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenu principal -->
+    <main class="search-page">
+        <div class="container">
+            <!-- Résultats de recherche -->
+            <div class="search-results">
+                <div class="results-header">
+                    <h2>Résultats{% if query %} pour "{{ query }}"{% endif %}</h2>
+                    <div class="results-count">
+                        <span>{{ total_results }}</span> résultat{% if total_results != 1 %}s{% endif %} trouvé{% if total_results != 1 %}s{% endif %}
+                    </div>
+                </div>
+                
+                <div class="search-results-grid">
+                    {% if destinations or packages %}
+                        <!-- Section des Destinations -->
+                        {% if destinations %}
+                        <div class="results-section">
+                            <h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Destinations</h3>
+                            <div class="destinations-grid">
+                                {% for destination in destinations %}
+                                <div class="destination-card">
+                                    <img src="{{ destination.image_url }}" alt="{{ destination.name }}" onerror="this.src='/static/images/destinations/default.jpg'">
+                                    <div class="destination-info">
+                                        <h4>{{ destination.name }}</h4>
+                                        <p><i class="fas fa-globe"></i> {{ destination.country }}</p>
+                                        <a href="/destination/{{ destination.id }}" class="btn-details">Découvrir</a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Section des Packages -->
+                        {% if packages %}
+                        <div class="results-section">
+                            <h3 class="section-title"><i class="fas fa-suitcase"></i> Packages</h3>
+                            <div class="packages-grid">
+                                {% for package in packages %}
+                                <div class="package-card">
+                                    <!-- NOTE: Assurez-vous que votre modèle Package a bien un champ 'image_url' -->
+                                    <img src="{{ package.image_url }}" alt="{{ package.name }}" onerror="this.src='/static/images/packages/default.jpg'">
+                                    <div class="package-info">
+                                        <h4>{{ package.name }}</h4>
+                                        <p><i class="fas fa-calendar-alt"></i> {{ package.duration }} jours</p>
+                                        <a href="/package/{{ package.id }}" class="btn-details">Voir le détail</a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Message si aucun résultat -->
+                        <div class="no-results">
+                            <h3>Aucun résultat trouvé</h3>
+                            <p>Essayez une autre recherche ou explorez nos <a href="/destinations">destinations</a>.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="/static/js/search.js"></script>
+{% endblock %}

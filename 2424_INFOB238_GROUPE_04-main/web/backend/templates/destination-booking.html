@@ -1,0 +1,137 @@
+<!-- Fichier : web/backend/templates/destination-booking.html (VERSION COMPLÈTE ET CORRIGÉE) -->
+
+{% extends "base.html" %}
+
+{% block title %}Réservation pour {{ destination.name }} - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/destination-booking.css">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="booking-container">
+            <div class="booking-header">
+                <h1>Réserver un voyage à {{ destination.name }}</h1>
+                <p><i class="fas fa-map-marker-alt"></i> {{ destination.country }}, {{ destination.continent }}</p>
+            </div>
+            
+            <div class="booking-grid">
+                <!-- Colonne du formulaire -->
+                <div class="booking-form-container">
+                    <form id="booking-form">
+                        <input type="hidden" name="destination_id" value="{{ destination.id }}">
+                        
+                        <div class="form-section">
+                            <h2>Dates du voyage</h2>
+                            <div class="form-group">
+                                <label for="departure-date">Départ</label>
+                                <input type="date" id="departure-date" name="departure_date" required min="{{ tomorrow_date }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="return-date">Retour</label>
+                                <input type="date" id="return-date" name="return_date" required min="{{ tomorrow_date }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h2>Voyageurs</h2>
+                            <div class="form-group">
+                                <label for="adults">Adultes</label>
+                                <select id="adults" name="adults" required>
+                                    <option value="1">1 adulte</option>
+                                    <option value="2">2 adultes</option>
+                                    <option value="3">3 adultes</option>
+                                    <option value="4">4 adultes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">CONTINUER</button>
+                    </form>
+                </div>
+                
+                <!-- Colonne du résumé -->
+                <div class="booking-summary">
+                    <img src="{{ destination.image_url }}" alt="{{ destination.name }}" class="destination-image" onerror="this.src='/static/images/destinations/default.jpg'">
+                    <h2>{{ destination.name }}</h2>
+                    <p>Note : {{ destination.rating }}/5</p>
+                    <hr>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Prix de base / jour</span>
+                            <span>{{ base_price }} €</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Durée</span>
+                            <span id="duration">1 jour</span>
+                        </div>
+                         <div class="summary-row">
+                            <span>Voyageurs</span>
+                            <span id="travelers-count">1 adulte</span>
+                        </div>
+                        <hr>
+                        <div class="summary-total">
+                            <span>Total estimé</span>
+                            <span id="total-price">{{ base_price }} €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+{% block body_scripts %}
+<script>
+    // --- JAVASCRIPT INTÉGRÉ ET ADAPTÉ ---
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Récupérer les données injectées par le backend
+        const BASE_PRICE_PER_DAY = {{ base_price }};
+
+        // 2. Récupérer les éléments du DOM
+        const departureDateInput = document.getElementById('departure-date');
+        const returnDateInput = document.getElementById('return-date');
+        const adultsSelect = document.getElementById('adults');
+
+        const durationSpan = document.getElementById('duration');
+        const travelersCountSpan = document.getElementById('travelers-count');
+        const totalPriceSpan = document.getElementById('total-price');
+        
+        // 3. Fonction pour calculer et mettre à jour le résumé
+        function updateSummary() {
+            // Calculer la durée
+            let duration = 1;
+            if (departureDateInput.value && returnDateInput.value) {
+                const start = new Date(departureDateInput.value);
+                const end = new Date(returnDateInput.value);
+                if (end >= start) {
+                    const diffTime = Math.abs(end - start);
+                    duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 pour inclure le jour de départ
+                }
+            }
+
+            // Nombre de voyageurs
+            const adults = parseInt(adultsSelect.value) || 1;
+
+            // Mettre à jour l'affichage
+            durationSpan.textContent = `${duration} jour${duration > 1 ? 's' : ''}`;
+            travelersCountSpan.textContent = `${adults} adulte${adults > 1 ? 's' : ''}`;
+
+            // Calculer le prix total
+            const total = (BASE_PRICE_PER_DAY * duration) * adults;
+            totalPriceSpan.textContent = `${total} €`;
+        }
+
+        // 4. Ajouter les écouteurs d'événements
+        departureDateInput.addEventListener('change', updateSummary);
+        returnDateInput.addEventListener('change', updateSummary);
+        adultsSelect.addEventListener('change', updateSummary);
+
+        // 5. Mettre à jour une première fois au chargement
+        updateSummary();
+    });
+</script>
+{% endblock %}

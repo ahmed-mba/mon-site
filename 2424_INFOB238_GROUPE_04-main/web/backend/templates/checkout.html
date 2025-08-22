@@ -1,0 +1,160 @@
+<!-- Fichier : web/backend/templates/checkout.html (VERSION COMPLÈTE ET CORRIGÉE) -->
+
+{% extends "base.html" %}
+
+{% block title %}Finaliser la réservation - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/checkout.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Finaliser votre réservation</h2>
+        
+        <div class="checkout-container">
+            <!-- Colonne du formulaire -->
+            <div class="checkout-form">
+                <form action="/api/bookings/create" method="POST" id="checkoutForm">
+                    <input type="hidden" name="package_id" value="{{ package.id }}">
+                    
+                    <h3>Voyageurs</h3>
+                    <div id="travelers-container">
+                        <!-- Voyageur 1 (Principal) -->
+                        <div class="traveler-info">
+                            <h4>Voyageur 1 (Principal)</h4>
+                            <div class="form-group">
+                                <label for="firstName1">Prénom</label>
+                                <input type="text" id="firstName1" name="firstName_1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName1">Nom</label>
+                                <input type="text" id="lastName1" name="lastName_1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="addTravelerBtn" class="add-traveler-btn">
+                        <i class="fas fa-plus"></i> Ajouter un voyageur
+                    </button>
+                    
+                    <hr>
+                    
+                    <h3>Informations de paiement</h3>
+                    <!-- (Formulaire de paiement simplifié pour l'instant) -->
+                    <div class="form-group">
+                        <label for="cardName">Nom sur la carte</label>
+                        <input type="text" id="cardName" name="card_name" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        CONFIRMER ET PAYER
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Colonne du résumé de la commande -->
+            <div class="order-summary">
+                <h2>Résumé de la commande</h2>
+                <div class="package-details">
+                    <img src="{{ package.image_url }}" alt="{{ package.name }}" class="package-image" onerror="this.src='/static/images/packages/default.jpg'">
+                    <h3>{{ package.name }}</h3>
+                    <p>{{ package.duration }} jours</p>
+                </div>
+                <div class="price-details">
+                    <div class="price-row">
+                        <span>Prix par personne</span>
+                        <span>{{ package.price }} €</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Nombre de voyageurs</span>
+                        <span id="traveler-count">1</span>
+                    </div>
+                    <hr>
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span id="total-price" class="total-price">{{ package.price }} €</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block body_scripts %}
+<script>
+    // --- JAVASCRIPT INTÉGRÉ ET ADAPTÉ ---
+
+    // 1. Récupérer les données du package injectées par le backend
+    const packageData = {
+        price: {{ package.price }}
+    };
+
+    // 2. Initialiser les variables
+    let travelerCount = 1;
+    const addTravelerBtn = document.getElementById('addTravelerBtn');
+    const travelersContainer = document.getElementById('travelers-container');
+    const travelerCountSpan = document.getElementById('traveler-count');
+    const totalPriceSpan = document.getElementById('total-price');
+    const checkoutForm = document.getElementById('checkoutForm');
+
+
+    // 3. Fonction pour mettre à jour le prix
+    function updatePrice() {
+        const total = packageData.price * travelerCount;
+        travelerCountSpan.textContent = travelerCount;
+        totalPriceSpan.textContent = `${total} €`;
+    }
+
+    // 4. Fonction pour ajouter un voyageur
+    function addTraveler() {
+        travelerCount++;
+        
+        const newTravelerDiv = document.createElement('div');
+        newTravelerDiv.className = 'traveler-info';
+        
+        newTravelerDiv.innerHTML = `
+            <div class="traveler-header">
+                <h4>Voyageur ${travelerCount}</h4>
+                <button type="button" class="remove-traveler-btn">×</button>
+            </div>
+            <div class="form-group">
+                <label for="firstName${travelerCount}">Prénom</label>
+                <input type="text" id="firstName${travelerCount}" name="firstName_${travelerCount}" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName${travelerCount}">Nom</label>
+                <input type="text" id="lastName${travelerCount}" name="lastName_${travelerCount}" required>
+            </div>
+        `;
+        
+        travelersContainer.appendChild(newTravelerDiv);
+        
+        // Ajouter l'événement pour supprimer ce nouveau voyageur
+        newTravelerDiv.querySelector('.remove-traveler-btn').addEventListener('click', function() {
+            removeTraveler(newTravelerDiv);
+        });
+        
+        updatePrice();
+    }
+    
+    // 5. Fonction pour supprimer un voyageur
+    function removeTraveler(travelerDiv) {
+        travelerCount--;
+        travelerDiv.remove();
+        updatePrice();
+    }
+
+    // 6. Ajouter les écouteurs d'événements
+    addTravelerBtn.addEventListener('click', addTraveler);
+
+    checkoutForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Empêche l'envoi réel du formulaire pour la démo
+        alert(`Réservation pour ${travelerCount} personne(s) confirmée ! Montant total : ${totalPriceSpan.textContent}`);
+        // Redirection vers la page d'accueil après confirmation
+        window.location.href = '/';
+    });
+
+</script>
+{% endblock %}

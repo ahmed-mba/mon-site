@@ -1,0 +1,85 @@
+<!-- Fichier : web/backend/templates/destination-detail.html (CORRIGÉ ET SIMPLIFIÉ) -->
+
+{% extends "base.html" %}
+
+{% block title %}{{ destination.name }} - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/destination-detail.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+    <main class="destination-detail-page">
+        <div class="container">
+            <!-- Bannière de la destination -->
+            <div class="destination-hero">
+                <div class="destination-hero-image">
+                    <!-- CORRECTION : Utiliser destination.image_url et chemin direct -->
+                    <img src="{{ destination.image_url }}" 
+                         alt="{{ destination.name }}"
+                         onerror="this.src='/static/images/destinations/default.jpg'">
+                    <div class="hero-overlay">
+                        <div class="hero-content">
+                            <h1>{{ destination.name }}</h1>
+                            <div class="destination-meta">
+                                <span class="location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ destination.continent }}, {{ destination.country }}
+                                </span>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <span class="rating-text">{{ destination.rating }}/5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu détaillé -->
+            <div class="destination-content">
+                <!-- Section Description -->
+                <section id="description" class="content-section">
+                    <h2>À propos de {{ destination.name }}</h2>
+                    <p>{{ destination.description }}</p>
+                </section>
+
+                <!-- Section Carte -->
+                <section id="map" class="content-section">
+                    <h2>Localisation</h2>
+                    <div class="map-container">
+                        <div id="destination-map" style="height: 400px; border-radius: 8px;"></div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="floating-cta">
+                <a href="/destination/{{ destination.id }}/booking" class="cta-button">
+                    <i class="fas fa-calendar-alt"></i> Réserver
+                </a>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block body_scripts %}
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="/static/js/destination-detail.js"></script>
+    
+    <script>
+        // --- CORRECTION : Injecter le JSON proprement ---
+        // On utilise la variable JSON préparée et le filtre "safe"
+        const destinationData = {{ map_data_json | safe }};
+
+        // Initialisation de la carte (le code reste le même)
+        if (destinationData.lat && destinationData.lng) {
+            const map = L.map('destination-map').setView([destinationData.lat, destinationData.lng], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([destinationData.lat, destinationData.lng]).addTo(map).bindPopup(`<b>${destinationData.name}</b>`).openPopup();
+        }
+    </script>
+{% endblock %}

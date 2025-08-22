@@ -1,0 +1,90 @@
+<!-- Fichier : web/backend/templates/favorites.html (CORRIGÉ ET SIMPLIFIÉ) -->
+
+{% extends "base.html" %}
+
+{% block title %}Mes Favoris - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/favorites.css">
+{% endblock %}
+
+{% block content %}
+    <main class="favorites-page">
+        <div class="container">
+            <!-- En-tête de la page -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-heart"></i>
+                    Mes Destinations Favorites
+                </h1>
+                <p class="page-subtitle">
+                    Retrouvez ici toutes vos destinations préférées
+                </p>
+            </div>
+
+            <!-- 
+                NOTE : Puisque notre fonction get_current_user() renvoie toujours None,
+                seul ce bloc sera affiché. C'est le comportement attendu pour l'instant.
+            -->
+            {% if not user %}
+            <!-- Message pour utilisateurs non connectés -->
+            <div class="login-required">
+                <div class="login-required-content">
+                    <i class="fas fa-lock"></i>
+                    <h2>Connexion requise</h2>
+                    <p>Connectez-vous pour voir vos destinations favorites et gérer votre liste de souhaits.</p>
+                    <div class="login-actions">
+                        <a href="/auth" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Se connecter
+                        </a>
+                        <a href="/destinations" class="btn-secondary">
+                            <i class="fas fa-map-marked-alt"></i>
+                            Découvrir les destinations
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <!-- 
+                    Cette section sera visible une fois que la connexion utilisateur sera implémentée.
+                    Nous la simplifions pour éviter les erreurs.
+                -->
+                {% if favorites %}
+                <!-- Grille des favoris -->
+                <div class="favorites-grid">
+                    {% for favorite in favorites %}
+                    <div class="favorite-card">
+                        <div class="destination-image">
+                            <!-- CORRECTION : Utiliser favorite.destination.image_url -->
+                            <img src="{{ favorite.destination.image_url }}" 
+                                 alt="{{ favorite.destination.name }}"
+                                 onerror="this.src='/static/images/destinations/default.jpg'">
+                        </div>
+                        <div class="destination-content">
+                            <h3>{{ favorite.destination.name }}</h3>
+                            <div class="destination-actions">
+                                <a href="/destination/{{ favorite.destination.id }}" class="btn-details">
+                                    Découvrir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Message si aucun favori -->
+                <div class="empty-favorites">
+                    <h2>Aucune destination favorite</h2>
+                    <p>Cliquez sur <i class="fas fa-heart"></i> pour ajouter des destinations à votre liste.</p>
+                    <a href="/destinations" class="btn-primary">Découvrir les destinations</a>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="/static/js/favorites.js"></script>
+{% endblock %}

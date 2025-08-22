@@ -1,0 +1,88 @@
+<!-- Fichier : web/backend/templates/destinations.html (VERSION AVEC CORRECTIONS PRÉCISES) -->
+
+{% extends "base.html" %}
+
+{% block title %}Nos Destinations - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/destinations.css">
+{% endblock %}
+
+{% block content %}
+    <!-- Bannière SANS le texte -->
+    <section class="banner destinations-banner">
+        <div class="banner-content">
+            <h1>Destinations du monde entier</h1>
+            <!-- Les statistiques et le paragraphe ont été supprimés -->
+        </div>
+    </section>
+    
+    <!-- Section des filtres avec une meilleure disposition -->
+    <section class="filters-section">
+        <div class="container">
+            <h2> Filtrer les destinations</h2>
+            <form id="destination-filters" class="filters-form" method="GET" action="/destinations">
+                <!-- CORRECTION : J'ai mis la div "filter-row" pour que le CSS l'aligne correctement -->
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="continent">Continent</label>
+                        <select id="continent" name="continent">
+                            <option value="">Tous les continents</option>
+                            {% for continent_name in all_continents %}
+                            <option value="{{ continent_name }}" {% if current_filters.continent == continent_name %}selected{% endif %}>{{ continent_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="price_category">Budget</label>
+                        <select id="price_category" name="price_category">
+                            <option value="">Tous les budgets</option>
+                            <option value="budget" {% if current_filters.price_category == 'budget' %}selected{% endif %}>Économique</option>
+                            <option value="moderate" {% if current_filters.price_category == 'moderate' %}selected{% endif %}>Modéré</option>
+                            <option value="luxury" {% if current_filters.price_category == 'luxury' %}selected{% endif %}>Luxe</option>
+                        </select>
+                    </div>
+                    <!-- On déplace les boutons dans la même ligne pour un meilleur alignement -->
+                    <div class="filter-actions">
+                        <button type="submit" class="btn-primary">Filtrer</button>
+                        <a href="/destinations" class="btn-secondary">Réinitialiser</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Liste des destinations -->
+    <section class="destinations-section">
+        <div class="container">
+            <div class="destinations-grid">
+                {% if destinations %}
+                    {% for destination in destinations %}
+                    <div class="destination-card">
+                        <div class="destination-image">
+                            <img src="{{ destination.image_url }}" alt="{{ destination.name }}" onerror="this.src='/static/images/destinations/default.jpg'">
+                            <div class="destination-overlay">
+                                <button class="favorite-btn" data-destination-id="{{ destination.id }}"><i class="far fa-heart"></i></button>
+                            </div>
+                        </div>
+                        <div class="destination-content">
+                            <h3>{{ destination.name }}</h3>
+                            <div class="destination-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ destination.country }}</span>
+                                <span><i class="fas fa-star"></i> {{ destination.rating }}/5</span>
+                            </div>
+                            <p class="destination-description">{{ destination.description | truncate(100) }}</p>
+                            <a href="/destination/{{ destination.id }}" class="btn-details">Découvrir</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-destinations">
+                        <h3>Aucune destination ne correspond à vos critères.</h3>
+                        <p>Essayez de modifier vos filtres ou <a href="/destinations">réinitialisez la recherche</a>.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

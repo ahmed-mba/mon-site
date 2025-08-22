@@ -1,0 +1,416 @@
+/* Responsive.css - Styles responsive communs à toutes les pages */
+
+/* ================================
+   BREAKPOINTS POUR GRANDS ÉCRANS
+   ================================ */
+   @media (max-width: 1200px) {
+    .container {
+        padding: 0 30px;
+    }
+    
+    .header-container {
+        padding: 15px 30px;
+    }
+    
+    .footer-container {
+        padding: 0 30px 50px;
+    }
+}
+
+/* ================================
+   BREAKPOINTS POUR TABLETTES
+   ================================ */
+@media (max-width: 992px) {
+    body {
+        padding-top: 75px;
+    }
+    
+    section {
+        padding: 70px 0;
+    }
+    
+    .header-container {
+        padding: 12px 25px;
+    }
+    
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px 30px;
+    }
+    
+    /* Navigation principale masquée sur tablette */
+    .main-nav {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    /* Ajustements des boutons */
+    .btn-primary, .btn-secondary, .btn-outline {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* ================================
+   BREAKPOINTS POUR MOBILES
+   ================================ */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    section {
+        padding: 60px 0;
+    }
+    
+    .container {
+        padding: 0 20px;
+    }
+    
+    .section-header {
+        margin-bottom: 30px;
+    }
+    
+    .section-header h2 {
+        font-size: 28px;
+    }
+    
+    .section-header h2::after {
+        width: 50px;
+        margin-top: 10px;
+    }
+    
+    .section-header p {
+        font-size: 16px;
+    }
+    
+    /* Header responsive */
+    .header-container {
+        padding: 12px 20px;
+    }
+    
+    .logo h1 {
+        font-size: 24px;
+    }
+    
+    /* Footer responsive */
+    .footer-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        padding: 0 20px 40px;
+    }
+    
+    /* Boutons responsive */
+    .btn-primary, .btn-secondary, .btn-outline {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .auth-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .favorites-btn {
+        font-size: 20px;
+        margin-right: 15px;
+    }
+}
+
+/* ================================
+   BREAKPOINTS POUR PETITS MOBILES
+   ================================ */
+@media (max-width: 576px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .container {
+        padding: 0 15px;
+    }
+    
+    .header-container {
+        padding: 10px 15px;
+    }
+    
+    .logo h1 {
+        font-size: 22px;
+    }
+    
+    .section-header h2 {
+        font-size: 24px;
+    }
+    
+    .section-header p {
+        font-size: 15px;
+    }
+    
+    /* Footer très petit écran */
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+        padding: 0 15px 30px;
+    }
+    
+    .footer-column h3::after,
+    .footer-column h4::after {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .contact-info li {
+        justify-content: center;
+    }
+    
+    .footer-column ul li a {
+        padding-left: 0;
+    }
+    
+    .footer-column ul li a::before {
+        display: none;
+    }
+    
+    /* Boutons pleine largeur sur très petits écrans */
+    .btn-primary, .btn-secondary, .btn-outline {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 14px 20px;
+    }
+    
+    .auth-btn {
+        padding: 10px 16px;
+    }
+}
+
+/* ================================
+   NAVIGATION MOBILE
+   ================================ */
+.mobile-nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: var(--white);
+    overflow: hidden;
+    transform: translateY(-120%);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    z-index: 99;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.mobile-nav.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.mobile-nav ul {
+    padding: 20px;
+}
+
+.mobile-nav ul li {
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 15px;
+}
+
+.mobile-nav ul li:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.mobile-nav ul li a {
+    display: block;
+    padding: 8px 12px;
+    font-weight: 500;
+    transition: var(--transition);
+    border-radius: 4px;
+}
+
+.mobile-nav ul li a:hover,
+.mobile-nav ul li a.active {
+    color: var(--primary-color);
+    background-color: rgba(42, 157, 244, 0.05);
+}
+
+/* ================================
+   OPTIMISATIONS TACTILES
+   ================================ */
+@media (hover: none) {
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-outline:hover,
+    .auth-btn:hover {
+        transform: none;
+        box-shadow: var(--shadow);
+    }
+    
+    .btn-primary:active,
+    .btn-secondary:active,
+    .btn-outline:active,
+    .auth-btn:active {
+        transform: scale(0.96);
+        transition: transform 0.2s;
+    }
+    
+    .favorites-btn:hover {
+        transform: none;
+    }
+    
+    .favorites-btn:active {
+        transform: scale(0.9);
+        transition: transform 0.2s;
+    }
+}
+
+/* ================================
+   MASQUAGE D'ÉLÉMENTS RESPONSIVE
+   ================================ */
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+    
+    .mobile-only {
+        display: block;
+    }
+}
+
+/* ================================
+   ESPACEMENT RESPONSIVE
+   ================================ */
+@media (max-width: 992px) {
+    section {
+        padding: 60px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 50px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    section {
+        padding: 40px 0;
+    }
+}
+
+/* ================================
+   AMÉLIORATION DE LA LECTURE
+   ================================ */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+/* ================================
+   GESTION DES DÉBORDEMENTS
+   ================================ */
+@media (max-width: 576px) {
+    * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .container {
+        overflow-x: hidden;
+    }
+}
+
+/* ================================
+   AMÉLIORATIONS D'ACCESSIBILITÉ MOBILE
+   ================================ */
+@media (max-width: 768px) {
+    /* Zones de touch plus grandes */
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline,
+    .auth-btn,
+    .favorites-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .mobile-nav ul li a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Amélioration du contraste sur mobile */
+    :focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+}
+
+/* ================================
+   ORIENTATIONS MOBILES
+   ================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .header-container {
+        padding: 8px 20px;
+    }
+    
+    .logo h1 {
+        font-size: 20px;
+    }
+    
+    section {
+        padding: 40px 0;
+    }
+}
+
+/* ================================
+   PERFORMANCE MOBILE
+   ================================ */
+@media (max-width: 768px) {
+    /* Réduction des animations sur mobile pour la performance */
+    *, *::before, *::after {
+        animation-duration: 0.3s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0.3s !important;
+    }
+    
+    /* Simplification des ombres sur mobile */
+    .btn-primary, .btn-secondary, .btn-outline, .auth-btn {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-primary:hover, .btn-secondary:hover, .btn-outline:hover, .auth-btn:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+}

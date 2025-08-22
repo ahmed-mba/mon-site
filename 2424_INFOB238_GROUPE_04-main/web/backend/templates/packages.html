@@ -1,0 +1,78 @@
+<!-- Fichier : web/backend/templates/packages.html (CORRIGÉ ET SIMPLIFIÉ) -->
+
+{% extends "base.html" %}
+
+{% block title %}Nos Packages - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/packages.css">
+{% endblock %}
+
+{% block content %}
+    <!-- Bannière -->
+    <section class="package-banner">
+        <div class="container">
+            <div class="banner-content">
+                <h1>Découvrez nos packages de voyage</h1>
+                <p>Des séjours clés en main pour des vacances inoubliables</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liste des packages -->
+    <section class="packages-section">
+        <div class="container">
+            <div class="packages-grid">
+                {% if packages %}
+                    {% for package in packages %}
+                    <div class="package-card">
+                        <div class="package-image">
+                            <!-- CORRECTION : Utiliser package.image_url et chemin direct -->
+                            <img src="{{ package.image_url }}" 
+                                 alt="{{ package.name }}"
+                                 onerror="this.src='/static/images/packages/default.jpg'">
+                            <div class="package-overlay">
+                                <button class="favorite-package-btn" data-package-id="{{ package.id }}">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="package-content">
+                            <h3>{{ package.name }}</h3>
+                            <div class="package-meta">
+                                <span class="duration">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ package.duration }} jours
+                                </span>
+                            </div>
+                            <p class="package-description">
+                                {{ package.description | truncate(120) }}
+                            </p>
+                            <div class="package-price">
+                                <span class="current-price">{{ package.price }}€</span>
+                                <span class="price-note">par personne</span>
+                            </div>
+                            <div class="package-actions">
+                                <a href="/package/{{ package.id }}" class="btn-details">
+                                    <i class="fas fa-eye"></i> Voir le détail
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-packages">
+                        <h3>Aucun package trouvé</h3>
+                        <p>Nous travaillons à créer de nouveaux packages passionnants.</p>
+                        <a href="/destinations" class="btn-primary">Découvrir nos destinations</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="/static/js/packages.js"></script>
+{% endblock %}

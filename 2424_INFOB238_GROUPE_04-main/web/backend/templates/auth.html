@@ -1,0 +1,78 @@
+<!-- Fichier : web/backend/templates/auth.html (COMPLET) -->
+
+{% extends "base.html" %}
+
+{% block title %}Connexion & Inscription - GO Unamur{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/auth.css">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Bienvenue sur GO</h2>
+        <p>Connectez-vous pour accéder à toutes les fonctionnalités</p>
+    </div>
+
+    <div class="auth-form-container">
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="login-tab">Connexion</div>
+            <div class="auth-tab" id="register-tab">Inscription</div>
+        </div>
+
+        <!-- Formulaire de connexion -->
+        <div class="auth-form" id="login-form">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" required>
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" name="password" required>
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                <button type="submit" class="auth-btn" id="login-button">Se connecter</button>
+            </form>
+        </div>
+
+        <!-- Formulaire d'inscription -->
+        <div class="auth-form" id="register-form" style="display: none;">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="register-name">Nom complet</label>
+                    <input type="text" id="register-name" name="name" required>
+                    <div class="error-message" id="register-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="email" required>
+                    <div class="error-message" id="register-email-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Mot de passe</label>
+                    <input type="password" id="register-password" name="password" required minlength="8">
+                    <div class="error-message" id="register-password-error"></div>
+                </div>
+                 <div class="form-group">
+                    <label for="register-confirm-password">Confirmer le mot de passe</label>
+                    <input type="password" id="register-confirm-password" required>
+                    <div class="error-message" id="register-confirm-password-error"></div>
+                </div>
+                <button type="submit" class="auth-btn" id="register-button">S'inscrire</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="auth-image">
+        <img src="/static/images/destinations/default.jpg" alt="Voyage" onerror="this.src='/static/images/destinations/default.jpg'">
+    </div>
+</div>
+{% endblock %}
+
+{% block body_scripts %}
+    <!-- On lie le fichier auth.js à la page -->
+    <script src="/static/js/auth.js"></script>
+{% endblock %}

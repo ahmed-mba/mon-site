@@ -1,0 +1,149 @@
+<!-- Fichier : web/backend/templates/index.html (VERSION FINALE AVEC LE BON CSS) -->
+
+{% extends "base.html" %}
+
+{% block title %}GO Unamur - Explorez le monde{% endblock %}
+
+{% block head_styles %}
+    <!-- On charge bien le fichier CSS spécifique à la page d'accueil -->
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+    <!-- Bannière principale -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h2>Découvrez le monde avec GO</h2>
+            <p>Explorez des destinations uniques et créez des souvenirs inoubliables</p>
+            <form action="/search" method="GET" class="search-box">
+                <input type="text" name="q" placeholder="Où voulez-vous aller ?">
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- SECTION 1 : Destinations populaires -->
+    <section class="popular-destinations">
+        <div class="section-header">
+            <h2>Destinations populaires</h2>
+        </div>
+        <!-- Utilisation de la classe "destinations-grid" définie dans le CSS -->
+        <div class="destinations-grid">
+            {% for destination in popular_destinations %}
+            <div class="destination-card">
+                <div class="destination-image">
+                    <img src="{{ destination.image_url }}" alt="{{ destination.name }}" onerror="this.src='/static/images/destinations/default.jpg'">
+                </div>
+                <div class="destination-info">
+                    <h3>{{ destination.name }}</h3>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> {{ destination.country }}</span>
+                        <span><i class="fas fa-star"></i> {{ destination.rating }}/5</span>
+                    </div>
+                    <a href="/destination/{{ destination.id }}" class="btn-details">Voir plus</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="view-all-container">
+            <a href="/destinations" class="btn-view-all">Voir toutes les destinations</a>
+        </div>
+    </section>
+
+    <!-- SECTION 2 : Packages en vedette -->
+    <section class="featured-packages">
+        <div class="section-header">
+            <h2>Packages en vedette</h2>
+        </div>
+        <!-- Utilisation de la classe "packages-slider" définie dans le CSS -->
+        <div class="packages-slider">
+            {% for package in featured_packages %}
+            <div class="package-card">
+                <div class="package-image">
+                    <img src="{{ package.image_url }}" alt="{{ package.name }}" onerror="this.src='/static/images/packages/default.jpg'">
+                    {% if package.is_promoted %}<div class="package-badge">Promotion</div>{% endif %}
+                </div>
+                <div class="package-info">
+                    <h3>{{ package.name }}</h3>
+                    <div class="package-details">
+                        <span><i class="fas fa-calendar-alt"></i> {{ package.duration }} jours</span>
+                    </div>
+                    <div class="package-price">
+                        <span class="current-price">{{ package.price }}€</span>
+                    </div>
+                    <a href="/package/{{ package.id }}" class="btn-details">Voir l'itinéraire</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- (Le reste des sections comme la carte et les témoignages) -->
+    <!-- ... -->
+
+    <!-- SECTION 3 : Carte Interactive -->
+    <section class="interactive-map">
+        <div class="section-header">
+            <h2>Explorez le monde</h2>
+        </div>
+        <div class="map-container" id="worldMap" style="height: 400px; width: 100%;"></div>
+    </section>
+
+    <!-- Fichier : web/backend/templates/index.html -->
+
+<!-- ... (juste après la section de la carte interactive) ... -->
+
+    <!-- SECTION 4 : Témoignages / Avis -->
+    <section class="testimonials">
+        <div class="section-header">
+            <h2>Ce que disent nos voyageurs</h2>
+        </div>
+        <div class="testimonials-slider">
+            {% if testimonials %}
+                {% for testimonial in testimonials %}
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <!-- Assurez-vous d'avoir une image sophie.jpg dans static/images/testimonials/ -->
+                        <img src="{{ testimonial.avatar }}" alt="{{ testimonial.name }}" onerror="this.src='/static/images/destinations/default.jpg'">
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"{{ testimonial.content }}"</p>
+                        <div class="testimonial-author">
+                            <h4>{{ testimonial.name }}</h4>
+                            <div class="rating">
+                                {% for i in range(testimonial.rating) %}
+                                    <i class="fas fa-star"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun témoignage pour le moment.</p>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block body_scripts %}
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Initialisation de la carte
+        const map = L.map('worldMap').setView([20, 0], 2); // Vue globale
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Récupérer les données pour les marqueurs de la carte
+        const destinationsForMap = {{ destinations_json_for_map | safe }};
+
+        // Ajouter un marqueur pour chaque destination
+        destinationsForMap.forEach(dest => {
+            if (dest.lat && dest.lng) {
+                L.marker([dest.lat, dest.lng]).addTo(map).bindPopup(`<b>${dest.name}</b>`);
+            }
+        });
+    </script>
+{% endblock %}

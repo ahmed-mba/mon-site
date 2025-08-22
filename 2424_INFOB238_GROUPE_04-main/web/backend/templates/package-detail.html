@@ -1,0 +1,84 @@
+<!-- Fichier : web/backend/templates/package-detail.html (CORRIGÉ ET SIMPLIFIÉ) -->
+
+{% extends "base.html" %}
+
+{% block title %}{{ package.name }} - {{ super() }}{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="/static/css/package-detail.css">
+{% endblock %}
+
+{% block content %}
+    <main class="package-detail-page">
+        <div class="container">
+            <!-- Bannière du package -->
+            <div class="package-hero">
+                <div class="package-hero-image">
+                    <!-- CORRECTION : Utiliser package.image_url et chemin direct -->
+                    <img src="{{ package.image_url }}" 
+                         alt="{{ package.name }}"
+                         onerror="this.src='/static/images/packages/default.jpg'">
+                    <div class="hero-overlay">
+                        <div class="hero-content">
+                            <h1>{{ package.name }}</h1>
+                            <div class="package-meta">
+                                <span class="duration">
+                                    <i class="fas fa-calendar-alt"></i> {{ package.duration }} jours
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu détaillé -->
+            <div class="package-content">
+                <!-- Section Aperçu -->
+                <section id="overview" class="content-section">
+                    <h2>Aperçu du voyage</h2>
+                    <p class="package-description">{{ package.description }}</p>
+                </section>
+
+                <!-- Section Inclusions -->
+                <section id="inclusions" class="content-section">
+                    <h2>Ce qui est inclus</h2>
+                    <div class="inclusions-grid">
+                        <div class="inclusion-card included">
+                            <h3>Inclus</h3>
+                            <ul>
+                                <li>Vols aller-retour</li>
+                                <li>Hébergements</li>
+                                <li>Petits-déjeuners</li>
+                                <li>Transferts aéroport-hôtel</li>
+                                <li>Guide francophone</li>
+                            </ul>
+                        </div>
+                        <div class="inclusion-card excluded">
+                            <h3>Non inclus</h3>
+                            <ul>
+                                <li>Repas non mentionnés</li>
+                                <li>Excursions optionnelles</li>
+                                <li>Dépenses personnelles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="floating-cta">
+                <div class="cta-info">
+                    <span class="cta-title">{{ package.name }}</span>
+                    <span class="cta-price">{{ package.price }}€/pers</span>
+                </div>
+                <a href="/checkout/{{ package.id }}" class="cta-button">
+                    Réserver
+                </a>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="/static/js/package-detail.js"></script>
+{% endblock %}
